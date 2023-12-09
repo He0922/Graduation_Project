@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
+
 #include "Explorer.generated.h"
 
 UCLASS()
@@ -25,5 +27,36 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+
+#pragma region PlayerComponent
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SpringArm")
+	class USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SpringArm")
+	class UCameraComponent* Camera;
+
+#pragma endregion
+
+
+
+#pragma region PlayerAction
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MappingContext")
+	class UInputMappingContext* Action_MappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Move_Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Look_Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Jump_Action;
+
+	void Move_Function(const FInputActionValue& Value);
+	void Look_Function(const FInputActionValue& Value);
+#pragma endregion
 
 };
