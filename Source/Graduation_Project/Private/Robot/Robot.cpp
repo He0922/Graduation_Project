@@ -38,13 +38,28 @@ void ARobot::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ARobot::CheckDistance()
+
+AActor* ARobot::GetPlayer() const
+{
+	return Player;
+}
+
+bool ARobot::CheckDistance()
 {
 	const FVector PlayerLocation = Player->GetActorLocation();
 	const FVector RobotLocation = this->GetActorLocation();
 
 	float Distance = (PlayerLocation - RobotLocation).Size();
 	
-	Debug::Print(FString::SanitizeFloat(Distance));
+	// Debug::Print(FString::SanitizeFloat(Distance));
+
+	if (Distance > 300.f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 

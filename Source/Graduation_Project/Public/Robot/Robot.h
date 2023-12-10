@@ -30,7 +30,11 @@ public:
 public:
 	class AExplorer* Player;
 
-	void CheckDistance();
+	UFUNCTION(BlueprintCallable, Category = "My Function",meta = (Displayname = "GetPlayer"))
+	AActor* GetPlayer() const;
+
+	UFUNCTION(BlueprintCallable, Category = "My Function")
+	bool CheckDistance();
 #pragma endregion
 
 
