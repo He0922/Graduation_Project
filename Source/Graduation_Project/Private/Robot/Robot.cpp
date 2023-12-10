@@ -73,25 +73,25 @@ bool ARobot::FollowPlayer()
 void ARobot::SetRobotSpeed()
 {
 	float Distance = CheckDistance();
-	if (Distance > 600.f) // 如果距离大于700.f
+	if (Distance > 600.f) 
 	{
-		MovementComponent->MaxWalkSpeed = 700.f; // 设置速度为600.f
+		MovementComponent->MaxWalkSpeed = 700.f; 
 	}
-	else if (500.f < Distance && Distance < 600.f) // 如果距离在400.f和700.f之间
+	else if (500.f < Distance && Distance < 600.f) 
 	{
-		MovementComponent->MaxWalkSpeed = 500.f; // 设置速度为400.f
+		MovementComponent->MaxWalkSpeed = 500.f; 
 	}
-	else if (400.f < Distance && Distance < 500.f) // 如果距离在400.f和700.f之间
+	else if (400.f < Distance && Distance < 500.f) 
 	{
-		MovementComponent->MaxWalkSpeed = 400.f; // 设置速度为400.f
+		MovementComponent->MaxWalkSpeed = 400.f; 
 	}
-	else if (200.f < Distance && Distance < 400.f) // 如果距离在200.f和400.f之间
+	else if (200.f < Distance && Distance < 400.f) 
 	{
-		MovementComponent->MaxWalkSpeed = 300.f; // 设置速度为200.f
+		MovementComponent->MaxWalkSpeed = 300.f; 
 	}
-	else if (100.f < Distance && Distance < 200.f) // 如果距离在200.f和400.f之间
+	else if (100.f < Distance && Distance < 200.f) 
 	{
-		MovementComponent->MaxWalkSpeed = 200.f; // 设置速度为200.f
+		MovementComponent->MaxWalkSpeed = 200.f; 
 	}
 
 	// Debug::Print(FString::SanitizeFloat(MovementComponent->GetMaxSpeed()));
