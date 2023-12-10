@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "Robot.generated.h"
 
+// 使用std命名空间，或者在使用std::pair的地方加上std::前缀
+using namespace std;
+
 UCLASS()
 class GRADUATION_PROJECT_API ARobot : public ACharacter
 {
@@ -30,11 +33,19 @@ public:
 public:
 	class AExplorer* Player;
 
+	UCharacterMovementComponent* MovementComponent;
+
 	UFUNCTION(BlueprintCallable, Category = "My Function",meta = (Displayname = "GetPlayer"))
 	AActor* GetPlayer() const;
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
-	bool CheckDistance();
+	float CheckDistance();
+
+	UFUNCTION(BlueprintCallable, Category = "My Function")
+	bool FollowPlayer();
+
+	UFUNCTION(BlueprintCallable, Category = "My Function")
+	void SetRobotSpeed();
 #pragma endregion
 
 
