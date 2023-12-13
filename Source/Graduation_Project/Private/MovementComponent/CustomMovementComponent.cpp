@@ -75,9 +75,10 @@ void UCustomMovementComponent::TraceFromEyeHeight(float TraceDistance, float Tra
 {
 	const FVector ComponentLocation = UpdatedComponent->GetComponentLocation();
 	const FVector EyeHeightOffset = UpdatedComponent->GetUpVector() * (CharacterOwner->BaseEyeHeight + TraceStartOffset);
+	//const FVector EyeHeightOffset = UpdatedComponent->GetUpVector() * 10.f;
 	
 	const FVector Start = ComponentLocation + EyeHeightOffset;
-	const FVector End = UpdatedComponent->GetForwardVector() + TraceDistance;
+	const FVector End = Start + UpdatedComponent->GetForwardVector() * TraceDistance;
 
 	DoLineTraceSingleByObject(Start, End, true);
 
