@@ -7,14 +7,18 @@
 #include "Graduation_Project/DebugHelper.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "MovementComponent/CustomMovementComponent.h"
 
 
 
 // Sets default values
-AExplorer::AExplorer()
+AExplorer::AExplorer(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	CustomMovementComponent = Cast<UCustomMovementComponent>(GetCharacterMovement());
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->SetupAttachment(RootComponent);

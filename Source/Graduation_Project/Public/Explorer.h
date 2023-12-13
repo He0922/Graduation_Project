@@ -8,6 +8,9 @@
 
 #include "Explorer.generated.h"
 
+
+class UCustomMovementComponent;
+
 UCLASS()
 class GRADUATION_PROJECT_API AExplorer : public ACharacter
 {
@@ -15,7 +18,7 @@ class GRADUATION_PROJECT_API AExplorer : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AExplorer();
+	AExplorer(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,6 +31,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CustomMovementComponent")
+	UCustomMovementComponent* CustomMovementComponent;
 
 #pragma region PlayerComponent
 public:
@@ -38,7 +44,6 @@ public:
 	class UCameraComponent* Camera;
 
 #pragma endregion
-
 
 
 #pragma region PlayerAction
@@ -57,6 +62,11 @@ public:
 
 	void Move_Function(const FInputActionValue& Value);
 	void Look_Function(const FInputActionValue& Value);
+#pragma endregion
+
+
+#pragma region Forceinline
+	FORCEINLINE UCustomMovementComponent* GetCustomMovementComponent() const { return CustomMovementComponent; }
 #pragma endregion
 
 };
