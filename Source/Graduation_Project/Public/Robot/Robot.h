@@ -35,18 +35,27 @@ public:
 
 	UCharacterMovementComponent* MovementComponent;
 
-	UFUNCTION(BlueprintCallable, Category = "My Function",meta = (Displayname = "GetPlayer"))
+	UFUNCTION(BlueprintCallable, Category = "My Function")
 	AActor* GetPlayer() const;
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
 	float CheckDistance();
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
-	bool FollowPlayer();
+	bool WhetherFollowPlayer();
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
 	void SetRobotSpeed();
 #pragma endregion
+
+#pragma region AI Algrithm
+	UFUNCTION(BlueprintCallable, Category = "My AI")
+	void FollowPlayer();
+
+	UFUNCTION(BlueprintCallable, Category = "My AI")
+	void Auto_Obstace_avoidance();
+#pragma endregion
+
 
 
 

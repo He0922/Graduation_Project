@@ -22,6 +22,8 @@ void ARobot::BeginPlay()
 
 	Player = Cast<AExplorer>(UGameplayStatics::GetActorOfClass(GetWorld(), AExplorer::StaticClass()));
 	MovementComponent = this->GetCharacterMovement();
+	MovementComponent->SetMovementMode(EMovementMode::MOVE_Flying);
+	
 }
 
 // Called every frame
@@ -38,6 +40,7 @@ void ARobot::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 
+#pragma region FollowPlayer
 AActor* ARobot::GetPlayer() const
 {
 	return Player;
@@ -56,7 +59,7 @@ float ARobot::CheckDistance()
 	return Distance;
 }
 
-bool ARobot::FollowPlayer()
+bool ARobot::WhetherFollowPlayer()
 {
 	float Distance = CheckDistance();
 
@@ -96,3 +99,17 @@ void ARobot::SetRobotSpeed()
 
 	// Debug::Print(FString::SanitizeFloat(MovementComponent->GetMaxSpeed()));
 }
+
+#pragma endregion
+
+
+#pragma region AI Algrithm
+void ARobot::FollowPlayer()
+{
+	const FVector RobotLocation = this->GetActorLocation();
+	const FVector PlayerLocation = Player->GetActorLocation();
+}
+void ARobot::Auto_Obstace_avoidance()
+{
+}
+#pragma endregion
