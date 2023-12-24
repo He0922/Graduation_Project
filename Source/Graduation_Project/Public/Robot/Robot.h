@@ -32,32 +32,23 @@ public:
 #pragma region FollowPlayer
 public:
 	class AExplorer* Player;
+	class ARobot_AIController* Robot_AIController;
 
 	UCharacterMovementComponent* MovementComponent;
 
-	UFUNCTION(BlueprintCallable, Category = "My Function")
-	AActor* GetPlayer() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "About RobotMove")
+	float Move_Threshold = 100.f;
 
-	UFUNCTION(BlueprintCallable, Category = "My Function")
-	float CheckDistance();
-
-	UFUNCTION(BlueprintCallable, Category = "My Function")
-	bool WhetherFollowPlayer();
+	bool IsMoveing;
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
 	void SetRobotSpeed();
 #pragma endregion
 
 #pragma region AI Algrithm
-	UFUNCTION(BlueprintCallable, Category = "My AI")
-	void FollowPlayer();
+	void LookAtPlayer();
 
-	UFUNCTION(BlueprintCallable, Category = "My AI")
-	void Auto_Obstace_avoidance();
+	void MoveToPlayerLocation();
 #pragma endregion
-
-
-
-
 
 };
