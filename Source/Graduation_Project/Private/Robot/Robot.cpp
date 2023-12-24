@@ -132,41 +132,7 @@ void ARobot::LookAtPlayer()
 
 	SetActorRotation(RobotRotation);
 }
-//void ARobot::MoveToPlayerLocation()
-//{
-//	// 获取Robot和玩家的位置以及Robot向前的向量
-//	const FVector PlayerLocation = Player->GetActorLocation();
-//	const FVector RobotLocation = this->GetActorLocation();
-//	const FVector RobotForward = this->GetActorForwardVector();
-//
-//	float RobotLocatino_X = RobotLocation.X;
-//	float RobotLocation_Y = RobotLocation.Y;
-//	float RobotLocation_Z = RobotLocation.Z;
-//
-//	float RobotForward_X = RobotForward.X;
-//	float RobotForward_Y = RobotForward.Y;
-//	float RobotForward_Z = RobotForward.Z;
-//
-//	float PlayerLocation_X = PlayerLocation.X;
-//	float PlayerLocation_Y = PlayerLocation.Y;
-//	float PlayerLocation_Z = PlayerLocation.Z;
-//
-//	// 获取Robot与Player之间的距离
-//	float Distance = (PlayerLocation - RobotLocation).Size();
-//
-//	// 若距离超过移动阈值将IsMoveing设置为true
-//	if (Distance > Move_Threshold) { IsMoveing = true; }
-//	else { IsMoveing = false; }
-//
-//	FVector NeedMoveToLocation = FVector(PlayerLocation_X, PlayerLocation_Y, RobotForward_Z);
-//
-//	FRotator FaceToLocation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, NeedMoveToLocation);
-//
-//	FVector MoveToLocation = FVector(FaceToLocation.Roll, 0.f, FaceToLocation.Roll);
-//	
-//	AddMovementInput(MoveToLocation, 1.f, true);
-//
-//}
+
 void ARobot::MoveToPlayerLocation()
 {
 	// 获取Robot和玩家的位置以及Robot向前的向量
