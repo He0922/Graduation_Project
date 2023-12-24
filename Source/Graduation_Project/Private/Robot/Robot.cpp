@@ -182,7 +182,7 @@ void ARobot::MoveToPlayerLocation()
 		IsMoveing = true;
 
 		// 计算朝向玩家位置所需旋转角度，将玩家位置的Z坐标替换为Robot位置的Z坐标
-		FVector PlayerLocationWithRobotZ = FVector(PlayerLocation.X, PlayerLocation.Y, RobotLocation.Z);
+		FVector PlayerLocationWithRobotZ = FVector(PlayerLocation.X+100.f, PlayerLocation.Y, RobotLocation.Z);
 		FRotator FaceToPlayerRotation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, PlayerLocationWithRobotZ);
 
 		// 更新Robot朝向

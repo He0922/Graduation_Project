@@ -37,7 +37,7 @@ public:
 	UCharacterMovementComponent* MovementComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "About RobotMove")
-	float Move_Threshold = 100.f;
+	float Move_Threshold = 300.f;
 
 	bool IsMoveing;
 
