@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "Robot.generated.h"
 
+
+class URobotMovementComponent;
+
+
 // 使用std命名空间，或者在使用std::pair的地方加上std::前缀
 using namespace std;
 
@@ -16,7 +20,7 @@ class GRADUATION_PROJECT_API ARobot : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	ARobot();
+	ARobot(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,12 +33,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	UCharacterMovementComponent* MovementComponent;
+
+
 #pragma region FollowPlayer
 public:
 	class AExplorer* Player;
 	class ARobot_AIController* Robot_AIController;
 
-	UCharacterMovementComponent* MovementComponent;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "About RobotMove")
 	float Move_Threshold = 300.f;
@@ -46,6 +54,10 @@ public:
 #pragma endregion
 
 #pragma region AI Algrithm
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RobotMovementComponent")
+	URobotMovementComponent* RobotMovementComponent;
+
+
 	void LookAtPlayer();
 
 	void MoveToPlayerLocation();
