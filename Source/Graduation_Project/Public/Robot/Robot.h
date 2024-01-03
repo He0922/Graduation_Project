@@ -10,6 +10,16 @@
 class URobotMovementComponent;
 
 
+UENUM()
+enum RobotState
+{
+	Idle,
+	Moveing,
+	PlayerControl
+};
+
+
+
 // 使用std命名空间，或者在使用std::pair的地方加上std::前缀
 using namespace std;
 
