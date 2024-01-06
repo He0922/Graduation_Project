@@ -13,6 +13,7 @@ void UCustomMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 	TraceClimbableSurfaces();
 	TraceFromEyeHeight(100.f);
+
 }
 
 

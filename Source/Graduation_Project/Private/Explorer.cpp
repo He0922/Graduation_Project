@@ -8,7 +8,12 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MovementComponent/CustomMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "CollisionQueryParams.h"
 
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 // Sets default values
@@ -53,6 +58,7 @@ void AExplorer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CameraTrace_Start_End();
 }
 
 // Called to bind functionality to input
@@ -98,3 +104,40 @@ void AExplorer::Look_Function(const FInputActionValue& Value)
 		AddControllerYawInput(MouseVector.X);
 	}
 }
+
+
+
+#pragma region Camera
+void AExplorer::CameraTrace(const FVector& Start, const FVector& End)
+{
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+
+	ECollisionChannel TraceChannel = ECC_Visibility;
+
+	FCollisionQueryParams TraceParams(TEXT("CameraTrace"),false);
+	TraceParams.AddIgnoredActors(ActorsToIgnore);
+	
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0.f, 0, 1.f);
+	bCameraTraceHit = GetWorld()->LineTraceMultiByChannel(Camera_OutLineTraceHitResult, Start, End, TraceChannel, TraceParams);
+
+	Debug::PrintArrayHitResult(Camera_OutLineTraceHitResult);
+
+}
+
+void AExplorer::CameraTrace_Start_End()
+{
+	float CameraTraceLeght = 1000.f;
+
+	const FVector CameraLocation = Camera->GetComponentLocation();
+	const FVector CameraForward = Camera->GetForwardVector();
+	const FVector CameraRight = Camera->GetRightVector();
+
+	const FVector Start = CameraLocation + CameraForward + CameraRight * 20.f;
+	const FVector End = Start + CameraForward * CameraTraceLeght;
+
+	CameraTrace(Start, End);
+}
+
+#pragma endregion

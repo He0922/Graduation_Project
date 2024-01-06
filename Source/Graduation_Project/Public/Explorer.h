@@ -69,4 +69,13 @@ public:
 	FORCEINLINE UCustomMovementComponent* GetCustomMovementComponent() const { return CustomMovementComponent; }
 #pragma endregion
 
+
+#pragma region Camera
+	TArray<FHitResult> Camera_OutLineTraceHitResult;
+	bool bCameraTraceHit;
+
+	void CameraTrace(const FVector& Start, const FVector& End);
+	void CameraTrace_Start_End();
+
+#pragma endregion
 };

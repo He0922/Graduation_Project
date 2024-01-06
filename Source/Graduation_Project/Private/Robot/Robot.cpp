@@ -10,6 +10,7 @@
 #include "Robot/Robot_AIController.h"
 #include "MovementComponent/RobotMovementComponent.h"
 
+
 // Sets default values
 ARobot::ARobot(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer.SetDefaultSubobjectClass<URobotMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -31,6 +32,9 @@ void ARobot::BeginPlay()
 	MovementComponent->SetMovementMode(EMovementMode::MOVE_Flying);
 
 	Robot_AIController = Cast<ARobot_AIController>(this->GetController());
+
+
+
 	
 }
 
@@ -95,6 +99,6 @@ void ARobot::MoveToPlayerLocation()
 		IsMoveing = false;
 	}
 }
-
-
 #pragma endregion
+
+
