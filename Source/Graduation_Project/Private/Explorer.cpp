@@ -2,6 +2,9 @@
 
 
 #include "Explorer.h"
+#include "Robot/Robot.h"
+
+#include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Graduation_Project/DebugHelper.h"
@@ -51,6 +54,7 @@ void AExplorer::BeginPlay()
 		}
 	}
 	
+	Robot = Cast<ARobot>(UGameplayStatics::GetActorOfClass(GetWorld(), ARobot::StaticClass()));
 }
 
 // Called every frame
@@ -72,6 +76,7 @@ void AExplorer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		MyEnhancedInput->BindAction(Look_Action, ETriggerEvent::Triggered, this, &AExplorer::Look_Function);
 		MyEnhancedInput->BindAction(Jump_Action, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		MyEnhancedInput->BindAction(Jump_Action, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		MyEnhancedInput->BindAction(ControlRobotMove, ETriggerEvent::Started, this, &AExplorer::Control_RobotMove);
 	}
 
 }
@@ -105,6 +110,15 @@ void AExplorer::Look_Function(const FInputActionValue& Value)
 	}
 }
 
+void AExplorer::Control_RobotMove(const FInputActionValue& Value)
+{
+	if (Camera_OutLineTraceHitResult.IsValidIndex(0))
+	{
+		RobotMoveToSpecifyLocation = true;
+		MouseClickLocation = Camera_OutLineTraceHitResult[0].Location;
+	}
+}
+
 
 
 #pragma region Camera
@@ -128,7 +142,7 @@ void AExplorer::CameraTrace(const FVector& Start, const FVector& End)
 
 void AExplorer::CameraTrace_Start_End()
 {
-	float CameraTraceLeght = 1000.f;
+	float CameraTraceLeght = 2000.f;
 
 	const FVector CameraLocation = Camera->GetComponentLocation();
 	const FVector CameraForward = Camera->GetForwardVector();

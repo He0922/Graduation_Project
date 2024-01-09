@@ -15,7 +15,7 @@ enum RobotState
 {
 	Idle,
 	Moveing,
-	PlayerControl
+	PlayerControlMove
 };
 
 
@@ -52,12 +52,6 @@ public:
 	class AExplorer* Player;
 	class ARobot_AIController* Robot_AIController;
 
-	
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "About RobotMove")
-	float Move_Threshold = 300.f;
-
-	bool IsMoveing;
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
 	void SetRobotSpeed();
@@ -67,10 +61,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RobotMovementComponent")
 	URobotMovementComponent* RobotMovementComponent;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Robot")
+	TEnumAsByte<RobotState> CurrentState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "About RobotMove")
+	float Move_Threshold = 200.f;
+
+	FVector MoveSpecifyLocation;
 
 	void LookAtPlayer();
 
+	void LookAtSpecifyLocation(const FVector& SpecifyLocation);
+
 	void MoveToPlayerLocation();
+
+	void MoveToSpecifyLocation(const FVector& SpecifyLocation);
 #pragma endregion
 
 };

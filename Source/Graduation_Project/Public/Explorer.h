@@ -60,8 +60,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* Jump_Action;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ControlRobotMove;
+
+	bool RobotMoveToSpecifyLocation = false;
+	FVector MouseClickLocation;
+
 	void Move_Function(const FInputActionValue& Value);
 	void Look_Function(const FInputActionValue& Value);
+	void Control_RobotMove(const FInputActionValue& Value);
 #pragma endregion
 
 
@@ -77,5 +84,9 @@ public:
 	void CameraTrace(const FVector& Start, const FVector& End);
 	void CameraTrace_Start_End();
 
+	
 #pragma endregion
+
+public:
+	class ARobot* Robot;
 };

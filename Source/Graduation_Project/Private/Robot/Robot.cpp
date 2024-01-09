@@ -43,8 +43,21 @@ void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	LookAtPlayer();
-	MoveToPlayerLocation();
+	if (Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
+	{
+		MoveSpecifyLocation = Player->MouseClickLocation;
+	}
+
+	if (!Player->RobotMoveToSpecifyLocation)
+	{
+		MoveToPlayerLocation();
+	}
+	else if (Player->RobotMoveToSpecifyLocation && Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
+	{
+		MoveToSpecifyLocation(MoveSpecifyLocation);
+	}
+
+	
 
 }
 
@@ -70,35 +83,73 @@ void ARobot::LookAtPlayer()
 	SetActorRotation(RobotRotation);
 }
 
-void ARobot::MoveToPlayerLocation()
+void ARobot::LookAtSpecifyLocation(const FVector& SpecifyLocation)
 {
-	// 获取Robot和玩家的位置以及Robot向前的向量
-	const FVector PlayerLocation = Player->GetActorLocation();
 	const FVector RobotLocation = this->GetActorLocation();
 
-	// 计算Robot与Player之间的距离
-	float Distance = (PlayerLocation - RobotLocation).Size();
+	FRotator RobotRotation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, SpecifyLocation);
 
-	// 若距离超过移动阈值将IsMoveing设置为true
-	if (Distance > Move_Threshold)
+	SetActorRotation(RobotRotation);
+}
+
+void ARobot::MoveToPlayerLocation()
+{
+	if (!Player->RobotMoveToSpecifyLocation)
 	{
-		IsMoveing = true;
+		LookAtPlayer();
 
-		// 计算朝向玩家位置所需旋转角度，将玩家位置的Z坐标替换为Robot位置的Z坐标
-		FVector PlayerLocationWithRobotZ = FVector(PlayerLocation.X+100.f, PlayerLocation.Y, RobotLocation.Z);
-		FRotator FaceToPlayerRotation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, PlayerLocationWithRobotZ);
+		// 获取Robot和玩家的位置以及Robot向前的向量
+		const FVector PlayerLocation = Player->GetActorLocation();
+		const FVector RobotLocation = this->GetActorLocation();
 
-		// 更新Robot朝向
-		this->SetActorRotation(FaceToPlayerRotation);
+		// 计算Robot与Player之间的距离
+		float Distance = (PlayerLocation - RobotLocation).Size();
 
-		// 根据蓝图，添加一个单位向量来移动Robot朝着玩家方向移动
-		AddMovementInput(PlayerLocationWithRobotZ - RobotLocation, 1.f, true);
-	}
-	else
-	{
-		IsMoveing = false;
+		// 定义一个容差值，表示Robot和Player之间的最小距离
+		const float Tolerance = 100.f;
+
+		if (Distance > Move_Threshold + Tolerance)
+		{
+			// 计算朝向玩家位置所需旋转角度，将玩家位置的Z坐标替换为Robot位置的Z坐标
+			FVector PlayerLocationWithRobotZ = FVector(PlayerLocation.X + 100.f, PlayerLocation.Y, RobotLocation.Z);
+			FRotator FaceToPlayerRotation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, PlayerLocationWithRobotZ);
+
+			// 更新Robot朝向
+			this->SetActorRotation(FaceToPlayerRotation);
+
+			// 根据蓝图，添加一个单位向量来移动Robot朝着玩家方向移动
+			AddMovementInput(PlayerLocationWithRobotZ - RobotLocation, 1.f, true);
+		}
 	}
 }
+
+void ARobot::MoveToSpecifyLocation(const FVector& SpecifyLocation)
+{
+	if(Player->RobotMoveToSpecifyLocation)
+	{
+		LookAtSpecifyLocation(SpecifyLocation);
+
+		// 获取机器人的位置
+		const FVector RobotLocation = this->GetActorLocation();
+
+		// 计算指定位置和机器人之间的距离
+		float Distance = (SpecifyLocation - RobotLocation).Size();
+
+		const float Threshold = 100.f;
+
+		if (Distance > Move_Threshold + Threshold)
+		{
+			FVector SpecifyLocationWithRobotZ = FVector(SpecifyLocation.X + 100.f, SpecifyLocation.Y, SpecifyLocation.Z + 100.f);
+			FRotator FaceToSpecifyLocation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, SpecifyLocationWithRobotZ);
+
+
+			this->SetActorRotation(FaceToSpecifyLocation);
+
+			AddMovementInput(SpecifyLocationWithRobotZ - RobotLocation, 1.f, true);
+		}
+	}
+}
+
 #pragma endregion
 
 
