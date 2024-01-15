@@ -43,21 +43,22 @@ void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 摄像头的射线检测是否命中目标 
 	if (Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
 	{
+		// 将命中的位置赋值给MoveSpecifyLocation变量
 		MoveSpecifyLocation = Player->MouseClickLocation;
 	}
 
-	if (!Player->RobotMoveToSpecifyLocation)
+
+	if (Player->bRobotFollowPlayer)
 	{
 		MoveToPlayerLocation();
 	}
-	else if (Player->RobotMoveToSpecifyLocation && Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
+	else if (!Player->bRobotFollowPlayer && Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
 	{
 		MoveToSpecifyLocation(MoveSpecifyLocation);
 	}
-
-	
 
 }
 
@@ -94,8 +95,9 @@ void ARobot::LookAtSpecifyLocation(const FVector& SpecifyLocation)
 
 void ARobot::MoveToPlayerLocation()
 {
-	if (!Player->RobotMoveToSpecifyLocation)
+	if (Player->bRobotFollowPlayer)
 	{
+		Debug::Print("in MoveToPlayerLocation");
 		LookAtPlayer();
 
 		// 获取Robot和玩家的位置以及Robot向前的向量
@@ -125,8 +127,9 @@ void ARobot::MoveToPlayerLocation()
 
 void ARobot::MoveToSpecifyLocation(const FVector& SpecifyLocation)
 {
-	if(Player->RobotMoveToSpecifyLocation)
+	if(!Player->bRobotFollowPlayer)
 	{
+		Debug::Print("in MoveToSpecifyLocation");
 		LookAtSpecifyLocation(SpecifyLocation);
 
 		// 获取机器人的位置

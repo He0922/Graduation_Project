@@ -63,6 +63,7 @@ void AExplorer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CameraTrace_Start_End();
+	Debug::Print(FString::Printf(TEXT("Bool value: %s"), bRobotFollowPlayer ? TEXT("true") : TEXT("false")));
 }
 
 // Called to bind functionality to input
@@ -77,6 +78,8 @@ void AExplorer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		MyEnhancedInput->BindAction(Jump_Action, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		MyEnhancedInput->BindAction(Jump_Action, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		MyEnhancedInput->BindAction(ControlRobotMove, ETriggerEvent::Started, this, &AExplorer::Control_RobotMove);
+		MyEnhancedInput->BindAction(RobotScanTarget_Action, ETriggerEvent::Started, this, &AExplorer::RobotScanTarget);
+		MyEnhancedInput->BindAction(RobotFollowPlayer_Action, ETriggerEvent::Started, this, &AExplorer::RobotFollowPlayer);
 	}
 
 }
@@ -99,6 +102,7 @@ void AExplorer::Move_Function(const FInputActionValue& Value)
 
 }
 
+// 玩家鼠标控制摄像机视角的旋转
 void AExplorer::Look_Function(const FInputActionValue& Value)
 {
 	const FVector2D MouseVector = Value.Get<FVector2D>();
@@ -110,13 +114,31 @@ void AExplorer::Look_Function(const FInputActionValue& Value)
 	}
 }
 
+
+// 机器人移动到鼠标指定位置
 void AExplorer::Control_RobotMove(const FInputActionValue& Value)
 {
-	if (Camera_OutLineTraceHitResult.IsValidIndex(0))
+	if (!bRobotFollowPlayer)
 	{
-		RobotMoveToSpecifyLocation = true;
-		MouseClickLocation = Camera_OutLineTraceHitResult[0].Location;
+		if (Camera_OutLineTraceHitResult.IsValidIndex(0))
+		{
+			RobotMoveToSpecifyLocation = true;
+			MouseClickLocation = Camera_OutLineTraceHitResult[0].Location;
+		}
 	}
+	
+}
+
+// 机器人扫描地形的行动
+void AExplorer::RobotScanTarget(const FInputActionValue& Value)
+{
+}
+
+// 判断机器人是跟随人物移动还是移动到鼠标指定位置
+void AExplorer::RobotFollowPlayer(const FInputActionValue& Value)
+{
+	if (bRobotFollowPlayer) { bRobotFollowPlayer = false; }
+	else { bRobotFollowPlayer = true; }
 }
 
 

@@ -63,12 +63,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* ControlRobotMove;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* RobotScanTarget_Action;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* RobotFollowPlayer_Action;
+
+
+	// 判断机器人是移动到指定位置还是跟随人物移动
+	bool bRobotFollowPlayer = true;
+
+	// 判断机器人是否正在移动到鼠标移动的指定位置
 	bool RobotMoveToSpecifyLocation = false;
 	FVector MouseClickLocation;
+
 
 	void Move_Function(const FInputActionValue& Value);
 	void Look_Function(const FInputActionValue& Value);
 	void Control_RobotMove(const FInputActionValue& Value);
+	void RobotScanTarget(const FInputActionValue& Value);
+	void RobotFollowPlayer(const FInputActionValue& Value);
 #pragma endregion
 
 
