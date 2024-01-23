@@ -64,25 +64,27 @@ public:
 	class UInputAction* ControlRobotMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputAction* RobotScanTarget_Action;
+	class UInputAction* RobotFollowPlayer_Action;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	class UInputAction* RobotFollowPlayer_Action;
+	class UInputAction* ScanObjects;
 
 
 	// 判断机器人是移动到指定位置还是跟随人物移动
 	bool bRobotFollowPlayer = true;
 
-	// 判断机器人是否正在移动到鼠标移动的指定位置
-	bool RobotMoveToSpecifyLocation = false;
+	bool bRobotMoveSpecifyLocation = false;
 	FVector MouseClickLocation;
+
+	// 判断机器人是否在进行扫描物体人物
+	bool bRobotScanObjects = false;
 
 
 	void Move_Function(const FInputActionValue& Value);
 	void Look_Function(const FInputActionValue& Value);
 	void Control_RobotMove(const FInputActionValue& Value);
-	void RobotScanTarget(const FInputActionValue& Value);
 	void RobotFollowPlayer(const FInputActionValue& Value);
+	void RobotScanObjects(const FInputActionValue& Value);
 #pragma endregion
 
 
@@ -98,7 +100,15 @@ public:
 	void CameraTrace(const FVector& Start, const FVector& End);
 	void CameraTrace_Start_End();
 
-	
+	// 用于查找是否存在Tag
+	TArray<FName> HasTag;
+	// 存储命中物体的Tag
+	TArray<FName> HitActorTags;
+	// 命中物体的第一个Tag
+	FName FristActorTags;
+
+	AActor* LineTraceHitActor;
+	FVector ScanObjectsLocation;
 #pragma endregion
 
 public:

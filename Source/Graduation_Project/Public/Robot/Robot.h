@@ -76,6 +76,8 @@ public:
 	void MoveToPlayerLocation();
 
 	void MoveToSpecifyLocation(const FVector& SpecifyLocation);
+
+	void RobotScanObjects(const FVector& ScanLocation);
 #pragma endregion
 
 };

@@ -3,6 +3,10 @@
 
 #include "Explorer.h"
 #include "Robot/Robot.h"
+#include "ScanObject/CanScanObjects_Child_1.h"
+
+// 包含GameplayTags模块的头文件
+#include "GameplayTagsModule.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
@@ -17,6 +21,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+
 
 
 // Sets default values
@@ -64,6 +69,10 @@ void AExplorer::Tick(float DeltaTime)
 
 	CameraTrace_Start_End();
 	Debug::Print(FString::Printf(TEXT("Bool value: %s"), bRobotFollowPlayer ? TEXT("true") : TEXT("false")));
+
+
+	FString Msg = ScanObjectsLocation.ToString();
+	Debug::Print(Msg);
 }
 
 // Called to bind functionality to input
@@ -78,8 +87,8 @@ void AExplorer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		MyEnhancedInput->BindAction(Jump_Action, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		MyEnhancedInput->BindAction(Jump_Action, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		MyEnhancedInput->BindAction(ControlRobotMove, ETriggerEvent::Started, this, &AExplorer::Control_RobotMove);
-		MyEnhancedInput->BindAction(RobotScanTarget_Action, ETriggerEvent::Started, this, &AExplorer::RobotScanTarget);
 		MyEnhancedInput->BindAction(RobotFollowPlayer_Action, ETriggerEvent::Started, this, &AExplorer::RobotFollowPlayer);
+		MyEnhancedInput->BindAction(ScanObjects, ETriggerEvent::Started, this, &AExplorer::RobotScanObjects);
 	}
 
 }
@@ -122,23 +131,74 @@ void AExplorer::Control_RobotMove(const FInputActionValue& Value)
 	{
 		if (Camera_OutLineTraceHitResult.IsValidIndex(0))
 		{
-			RobotMoveToSpecifyLocation = true;
 			MouseClickLocation = Camera_OutLineTraceHitResult[0].Location;
 		}
 	}
 	
 }
 
-// 机器人扫描地形的行动
-void AExplorer::RobotScanTarget(const FInputActionValue& Value)
-{
-}
 
 // 判断机器人是跟随人物移动还是移动到鼠标指定位置
 void AExplorer::RobotFollowPlayer(const FInputActionValue& Value)
 {
-	if (bRobotFollowPlayer) { bRobotFollowPlayer = false; }
-	else { bRobotFollowPlayer = true; }
+	// 若机器人跟随玩家
+	if (bRobotFollowPlayer) 
+	{ 
+		bRobotFollowPlayer = false; 
+		bRobotScanObjects = false;
+		bRobotMoveSpecifyLocation = true;
+	}
+	else 
+	{ 
+		bRobotFollowPlayer = true;
+		bRobotScanObjects = false;
+		bRobotMoveSpecifyLocation = false;
+	}
+}
+
+
+void AExplorer::RobotScanObjects(const FInputActionValue& Value)
+{
+	if (bRobotScanObjects == false)
+	{
+		bRobotScanObjects = true;
+		bRobotFollowPlayer = false;
+		bRobotMoveSpecifyLocation = false;
+	}
+	
+	// 若摄像机检测射线命中目标
+	if (Camera_OutLineTraceHitResult.IsValidIndex(0))
+	{
+		LineTraceHitActor = Camera_OutLineTraceHitResult[0].GetActor();
+		Debug::Print(LineTraceHitActor->GetName());
+
+		HitActorTags = LineTraceHitActor->Tags;
+
+		// 判断射线检测到的物体是否有Tag
+		if (!(HitActorTags.Num() == 0))
+		{
+			FristActorTags = HitActorTags[0];
+
+			Debug::Print(FristActorTags.ToString());
+
+			// 判断检测到的物体的Tag
+			if (FristActorTags == (TEXT("ScanText")))
+			{
+				// 进行检测到的Tag对象类型转换
+				if (ACanScanObjects_Child_1* CanScanObjects_Child_1 = Cast<ACanScanObjects_Child_1>(LineTraceHitActor))
+				{
+					Debug::Print("Cast Sucess");
+
+					FVector ObjectsForward = CanScanObjects_Child_1->GetActorForwardVector();
+
+					ScanObjectsLocation = CanScanObjects_Child_1->GetActorLocation() + ObjectsForward * 20.f;
+
+					
+					bRobotScanObjects = true;
+				}
+			}
+		}	
+	}
 }
 
 

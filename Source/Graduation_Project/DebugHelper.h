@@ -1,8 +1,9 @@
 #pragma once
 namespace Debug
 {
-	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1)
+	static void Print(const FString& Msg, const FColor& Color = FColor::Red, int32 InKey = -1)
 	{
+		// FColor::MakeRandomColor()
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(InKey, 0.0f, Color, Msg);
@@ -12,7 +13,7 @@ namespace Debug
 	}
 
 	// 在Debug命名空间中添加一个新的函数，用于打印TArray<FHitResult>内容
-	static void PrintArrayHitResult(const TArray<FHitResult>& HitResults, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1)
+	static void PrintArrayHitResult(const TArray<FHitResult>& HitResults, const FColor& Color = FColor::Black, int32 InKey = -1)
 	{
 		// 遍历HitResults数组
 		for (const FHitResult& Hit : HitResults)
