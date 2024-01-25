@@ -71,6 +71,8 @@ public:
 
 	void LookAtPlayer();
 
+	void LookSpecifyLocation(const FVector& SpecifyLocation);
+
 	void LookAtSpecifyLocation(const FVector& SpecifyLocation);
 
 	void MoveToPlayerLocation();

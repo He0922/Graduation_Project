@@ -193,7 +193,6 @@ void AExplorer::RobotScanObjects(const FInputActionValue& Value)
 
 					ScanObjectsLocation = CanScanObjects_Child_1->GetActorLocation() + ObjectsForward * 20.f;
 
-					
 					bRobotScanObjects = true;
 				}
 			}

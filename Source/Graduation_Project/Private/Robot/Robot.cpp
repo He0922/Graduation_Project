@@ -35,10 +35,6 @@ void ARobot::BeginPlay()
 	MovementComponent->SetMovementMode(EMovementMode::MOVE_Flying);
 
 	Robot_AIController = Cast<ARobot_AIController>(this->GetController());
-
-
-
-	
 }
 
 // Called every frame
@@ -85,6 +81,7 @@ void ARobot::SetRobotSpeed()
 }
 
 
+// Robot看向玩家
 void ARobot::LookAtPlayer()
 {
 	FVector PlayerLocation = Player->GetActorLocation();
@@ -96,6 +93,7 @@ void ARobot::LookAtPlayer()
 }
 
 
+// Robot看向指定位置
 void ARobot::LookAtSpecifyLocation(const FVector& SpecifyLocation)
 {
 	const FVector RobotLocation = this->GetActorLocation();
@@ -106,6 +104,7 @@ void ARobot::LookAtSpecifyLocation(const FVector& SpecifyLocation)
 }
 
 
+// Robot移动至玩家位置
 void ARobot::MoveToPlayerLocation()
 {
 	if (Player->bRobotFollowPlayer)
@@ -138,6 +137,7 @@ void ARobot::MoveToPlayerLocation()
 }
 
 
+// Robot移动至指定位置
 void ARobot::MoveToSpecifyLocation(const FVector& SpecifyLocation)
 {
 	// 判断机器人是否在跟随玩家
@@ -166,6 +166,8 @@ void ARobot::MoveToSpecifyLocation(const FVector& SpecifyLocation)
 	}
 }
 
+
+// Robot扫描物体
 void ARobot::RobotScanObjects(const FVector& ScanLocation)
 {
 	LookAtSpecifyLocation(ScanLocation);

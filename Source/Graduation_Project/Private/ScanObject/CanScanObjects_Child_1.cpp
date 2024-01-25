@@ -4,6 +4,7 @@
 #include "ScanObject/CanScanObjects_Child_1.h"
 #include "Components/BoxComponent.h"
 #include "Graduation_Project/DebugHelper.h"
+#include "Explorer.h"
 
 
 ACanScanObjects_Child_1::ACanScanObjects_Child_1(const FObjectInitializer& ObjectInitializer)
@@ -41,7 +42,11 @@ void ACanScanObjects_Child_1::Tick(float DeltaTime)
 
 void ACanScanObjects_Child_1::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Debug::Print("Overlap Begin!");
+	if (AExplorer* Player = Cast<AExplorer>(OtherActor))
+	{
+		Debug::Print("Overlap Begin!");
+		ScanObjectsTextLocation = this->GetActorLocation();
+	}
 }
 
 void ACanScanObjects_Child_1::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

@@ -40,4 +40,7 @@ public:
 	// 声明碰撞结束的事件函数
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	FVector ScanObjectsTextLocation;
+	//class AExplorer* Player;
 };
