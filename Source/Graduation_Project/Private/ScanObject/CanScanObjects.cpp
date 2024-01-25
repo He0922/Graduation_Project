@@ -2,6 +2,7 @@
 
 
 #include "ScanObject/CanScanObjects.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ACanScanObjects::ACanScanObjects()
@@ -9,6 +10,7 @@ ACanScanObjects::ACanScanObjects()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	this->Tags.Add(FName("CanScan"));
 }
 
 // Called when the game starts or when spawned
@@ -23,10 +25,5 @@ void ACanScanObjects::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-bool ACanScanObjects::GetCanScan()
-{
-	return CanScan;
 }
 

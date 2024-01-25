@@ -23,6 +23,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 public:	
 	// Called every frame
@@ -76,8 +78,7 @@ public:
 	bool bRobotMoveSpecifyLocation = false;
 	FVector MouseClickLocation;
 
-	// 判断机器人是否在进行扫描物体人物
-	bool bRobotScanObjects = false;
+
 
 
 	void Move_Function(const FInputActionValue& Value);
@@ -100,16 +101,36 @@ public:
 	void CameraTrace(const FVector& Start, const FVector& End);
 	void CameraTrace_Start_End();
 
-	// 用于查找是否存在Tag
-	TArray<FName> HasTag;
-	// 存储命中物体的Tag
-	TArray<FName> HitActorTags;
-	// 命中物体的第一个Tag
-	FName FristActorTags;
+	
 
-	AActor* LineTraceHitActor;
-	FVector ScanObjectsLocation;
+
 #pragma endregion
+
+
+#pragma region AboutScan
+	// 存储Capsule碰撞的Actor
+	AActor* Capsule_CollisionActor;
+	// 存储射线检测命中的对象Actor
+	AActor* LT_HitActor;
+
+	// 判断机器人是否在进行扫描物体人物
+	bool bRemoteRobotScanObjects = false;
+	bool bCloserRangeRobotScanObjects = false;
+
+	bool bCapsuleCollision = false;
+
+
+	// 存储射线命中的物体的Tag
+	TArray<FName> LT_HitActorTags;
+
+	// 存储Capsule的碰撞的物体的Tag
+	TArray<FName> CollisionActorTags;
+
+
+	FVector LT_ScanObjectsLocation;
+	FVector CapsuleCollisionScanObjectsLocation;
+#pragma endregion
+
 
 public:
 	class ARobot* Robot;

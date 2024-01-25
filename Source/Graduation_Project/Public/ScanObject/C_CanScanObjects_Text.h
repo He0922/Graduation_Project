@@ -4,34 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "ScanObject/CanScanObjects.h"
-
-
-
-#include "CanScanObjects_Child_1.generated.h"
+#include "C_CanScanObjects_Text.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GRADUATION_PROJECT_API ACanScanObjects_Child_1 : public ACanScanObjects
+class GRADUATION_PROJECT_API AC_CanScanObjects_Text : public ACanScanObjects
 {
 	GENERATED_BODY()
-
+	
 public:
-	ACanScanObjects_Child_1(const FObjectInitializer& ObjectInitializer);
+	AC_CanScanObjects_Text();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Collision")
-	class UBoxComponent* BoxCollision;
-
+#pragma region AboutScan
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "BoxCollision")
+	class UBoxComponent* BoxCollision_C;
 
 	// 声明碰撞开始的事件函数
 	UFUNCTION()
@@ -40,7 +33,8 @@ public:
 	// 声明碰撞结束的事件函数
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+#pragma endregion
 
-	FVector ScanObjectsTextLocation;
-	//class AExplorer* Player;
+public:
+
 };

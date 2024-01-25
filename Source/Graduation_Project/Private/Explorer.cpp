@@ -3,7 +3,8 @@
 
 #include "Explorer.h"
 #include "Robot/Robot.h"
-#include "ScanObject/CanScanObjects_Child_1.h"
+#include "Graduation_Project/DebugHelper.h"
+#include "ScanObject/C_CanScanObjects_Text.h"
 
 // 包含GameplayTags模块的头文件
 #include "GameplayTagsModule.h"
@@ -11,7 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Graduation_Project/DebugHelper.h"
+
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MovementComponent/CustomMovementComponent.h"
@@ -21,6 +22,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+
 
 
 
@@ -42,8 +44,6 @@ AExplorer::AExplorer(const FObjectInitializer& ObjectInitializer)
 	Camera->SetupAttachment(SpringArm);
 	Camera->bUsePawnControlRotation = false;
 
-
-
 }
 
 // Called when the game starts or when spawned
@@ -62,6 +62,23 @@ void AExplorer::BeginPlay()
 	Robot = Cast<ARobot>(UGameplayStatics::GetActorOfClass(GetWorld(), ARobot::StaticClass()));
 }
 
+
+void AExplorer::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Capsule_CollisionActor = OtherActor;
+
+	if (Capsule_CollisionActor->Tags.Num() != 0 && Capsule_CollisionActor->Tags[0] == FName("CanScan"))
+	{
+		bCapsuleCollision = true;
+	}
+}
+
+void AExplorer::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	bCapsuleCollision = false;
+}
+
+
 // Called every frame
 void AExplorer::Tick(float DeltaTime)
 {
@@ -69,10 +86,13 @@ void AExplorer::Tick(float DeltaTime)
 
 	CameraTrace_Start_End();
 	Debug::Print(FString::Printf(TEXT("Bool value: %s"), bRobotFollowPlayer ? TEXT("true") : TEXT("false")));
+	Debug::Print(FString::Printf(TEXT("CapsuleCollision:%s"), bCapsuleCollision ? TEXT("true") : TEXT("false")));
+	Debug::Print(FString::Printf(TEXT("bRemotRobotScanObjects:%s"), bRemoteRobotScanObjects ? TEXT("true") : TEXT("false")));
+	Debug::Print(FString::Printf(TEXT("bCloserRangeScanObejcts:%s"), bCloserRangeRobotScanObjects ? TEXT("true") : TEXT("false")));
 
 
-	FString Msg = ScanObjectsLocation.ToString();
-	Debug::Print(Msg);
+	//FString Msg = ScanObjectsLocation.ToString();
+	//Debug::Print(Msg);
 }
 
 // Called to bind functionality to input
@@ -145,59 +165,82 @@ void AExplorer::RobotFollowPlayer(const FInputActionValue& Value)
 	if (bRobotFollowPlayer) 
 	{ 
 		bRobotFollowPlayer = false; 
-		bRobotScanObjects = false;
 		bRobotMoveSpecifyLocation = true;
+		bRemoteRobotScanObjects = false;
+		bCloserRangeRobotScanObjects = false;
 	}
 	else 
 	{ 
 		bRobotFollowPlayer = true;
-		bRobotScanObjects = false;
 		bRobotMoveSpecifyLocation = false;
+		bRemoteRobotScanObjects = false;
+		bCloserRangeRobotScanObjects = false;
 	}
 }
 
 
 void AExplorer::RobotScanObjects(const FInputActionValue& Value)
 {
-	if (bRobotScanObjects == false)
+	// 此处为远距离扫描所进行的操作(CapsuleCollision为false代表远距离控制机器人扫描)
+	if (bCapsuleCollision)
 	{
-		bRobotScanObjects = true;
-		bRobotFollowPlayer = false;
-		bRobotMoveSpecifyLocation = false;
-	}
-	
-	// 若摄像机检测射线命中目标
-	if (Camera_OutLineTraceHitResult.IsValidIndex(0))
-	{
-		LineTraceHitActor = Camera_OutLineTraceHitResult[0].GetActor();
-		Debug::Print(LineTraceHitActor->GetName());
+		Debug::Print(Capsule_CollisionActor->GetName());
 
-		HitActorTags = LineTraceHitActor->Tags;
-
-		// 判断射线检测到的物体是否有Tag
-		if (!(HitActorTags.Num() == 0))
+		CollisionActorTags = Capsule_CollisionActor->Tags;
+		if (CollisionActorTags[1] == FName("ScanText"))
 		{
-			FristActorTags = HitActorTags[0];
-
-			Debug::Print(FristActorTags.ToString());
-
-			// 判断检测到的物体的Tag
-			if (FristActorTags == (TEXT("ScanText")))
+			if (AC_CanScanObjects_Text* CanScanObjects_Text = Cast<AC_CanScanObjects_Text>(Capsule_CollisionActor))
 			{
-				// 进行检测到的Tag对象类型转换
-				if (ACanScanObjects_Child_1* CanScanObjects_Child_1 = Cast<ACanScanObjects_Child_1>(LineTraceHitActor))
+				Debug::Print("Capsule Collision Is CanScanObjects_Text");
+
+				FVector ObjectsForward = CanScanObjects_Text->GetActorForwardVector();
+
+				CapsuleCollisionScanObjectsLocation = CanScanObjects_Text->GetActorLocation() + ObjectsForward * 20.f;
+
+				Debug::Print("CapsuleCollisionScanIbjectLocation: " + CapsuleCollisionScanObjectsLocation.ToString());
+
+				bCloserRangeRobotScanObjects = true;
+				bRemoteRobotScanObjects = false;
+				bRobotFollowPlayer = false;
+				bRobotMoveSpecifyLocation = false;
+			}
+		}
+	}
+	// 此处为近距离扫描(CapusleCollision为true)[不需要进行Tag是否存在与第一个Tag是否为Scan判断]
+	else
+	{
+		// 若摄像机检测射线命中目标
+		if (Camera_OutLineTraceHitResult.IsValidIndex(0))
+		{
+			LT_HitActor = Camera_OutLineTraceHitResult[0].GetActor();
+			Debug::Print(LT_HitActor->GetName());
+
+			LT_HitActorTags = LT_HitActor->Tags;
+
+			// 判断该物体能否扫描
+			if ((LT_HitActorTags.Num() != 0) && (LT_HitActorTags[0] == FName("CanScan")))
+			{
+				// 可以扫描在判断第二个Tag进行对于的类型转换
+				if (LT_HitActorTags[1] == FName("ScanText"))
 				{
-					Debug::Print("Cast Sucess");
+					if (AC_CanScanObjects_Text* CanScanObjects_Text = Cast<AC_CanScanObjects_Text>(LT_HitActor))
+					{
+						Debug::Print("LineTrace Is CanScanObjects_Text");
+						FVector ObjectsForward = CanScanObjects_Text->GetActorForwardVector();
 
-					FVector ObjectsForward = CanScanObjects_Child_1->GetActorForwardVector();
+						LT_ScanObjectsLocation = CanScanObjects_Text->GetActorLocation() + ObjectsForward * 20.f;
+						Debug::Print(LT_ScanObjectsLocation.ToString());
 
-					ScanObjectsLocation = CanScanObjects_Child_1->GetActorLocation() + ObjectsForward * 20.f;
-
-					bRobotScanObjects = true;
+						bRemoteRobotScanObjects = true;
+						bCloserRangeRobotScanObjects = false;
+						bRobotFollowPlayer = false;
+						bRobotMoveSpecifyLocation = false;
+					}
 				}
 			}
-		}	
+		}
 	}
+
 }
 
 

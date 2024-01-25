@@ -2,7 +2,6 @@
 
 
 #include "Robot/Robot.h"
-#include "ScanObject/CanScanObjects_Child_1.h"
 
 
 #include "Graduation_Project/Public/Explorer.h"
@@ -42,6 +41,8 @@ void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Debug::Print("RobotLocation: "+this->GetActorLocation().ToString());
+
 	// 摄像头的射线检测是否命中目标 
 	if (Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
 	{
@@ -60,10 +61,16 @@ void ARobot::Tick(float DeltaTime)
 		Debug::Print("Robot MoveSpecifyLocation");
 		MoveToSpecifyLocation(MoveSpecifyLocation);
 	}
-	else if (Player->bRobotScanObjects)
+	else if (Player->bRemoteRobotScanObjects)
 	{
-		Debug::Print("Robot ScanObjects");
-		RobotScanObjects(Player->ScanObjectsLocation);
+		Debug::Print("Remote Robot ScanObjects");
+		RobotScanObjects(Player->LT_ScanObjectsLocation);
+	}
+	else if (Player->bCloserRangeRobotScanObjects)
+	{
+		Debug::Print("CloserRange Robot ScanObjects");
+		RobotScanObjects(Player->CapsuleCollisionScanObjectsLocation);
+		
 	}
 }
 
@@ -172,6 +179,8 @@ void ARobot::RobotScanObjects(const FVector& ScanLocation)
 {
 	LookAtSpecifyLocation(ScanLocation);
 
+	Debug::Print("ScanLocation:" + ScanLocation.ToString());
+
 	FVector RobotLocation = this->GetActorLocation();
 	FVector RobotScanObjectsLocation = ScanLocation;
 
@@ -183,6 +192,7 @@ void ARobot::RobotScanObjects(const FVector& ScanLocation)
 	if (Distance > Move_Threshold + Threshold)
 	{
 		FVector ScanObjectsLocation = FVector(RobotScanObjectsLocation.X, RobotScanObjectsLocation.Y, RobotScanObjectsLocation.Z + 100.f);
+
 		FRotator FaceToScanObjectLocation = UKismetMathLibrary::FindLookAtRotation(RobotLocation, ScanObjectsLocation);
 
 		this->SetActorRotation(FaceToScanObjectLocation);
