@@ -25,6 +25,10 @@
 		{
 			"Name": "DatasmithFBXImporter",
 			"Enabled": true
+		},
+		{
+			"Name": "ChaosClothAssetEditor",
+			"Enabled": true
 		}
 	]
 }
