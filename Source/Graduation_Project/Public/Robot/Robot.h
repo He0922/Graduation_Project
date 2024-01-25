@@ -54,7 +54,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "My Function")
-	void SetRobotSpeed();
+	void SetRobotFollowPlayerSpeed();
 #pragma endregion
 
 #pragma region AI Algrithm

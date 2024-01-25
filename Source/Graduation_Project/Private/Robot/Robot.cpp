@@ -41,7 +41,10 @@ void ARobot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Debug::Print("RobotLocation: "+this->GetActorLocation().ToString());
+	// Debug::Print("RobotLocation: "+this->GetActorLocation().ToString());
+
+	SetRobotFollowPlayerSpeed();
+	Debug::Print(FString::Printf(TEXT("Current Speed: %f"), RobotMovementComponent->Velocity.Length()));
 
 	// 摄像头的射线检测是否命中目标 
 	if (Player->Camera_OutLineTraceHitResult.IsValidIndex(0))
@@ -83,8 +86,43 @@ void ARobot::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 
 #pragma region AI Algrithm
-void ARobot::SetRobotSpeed()
+void ARobot::SetRobotFollowPlayerSpeed()
 {
+	if (Player->bRobotFollowPlayer)
+	{
+		FVector RobotLocation = this->GetActorLocation();
+		FVector PlayerLocation = Player->GetActorLocation();
+
+		float Distanc = (RobotLocation - PlayerLocation).Size();
+
+		Debug::Print(FString::Printf(TEXT("Distanc: %f"), Distanc));
+
+		if (Distanc > 1000.f)
+		{
+			RobotMovementComponent->MaxFlySpeed = 800.f;
+		}
+		else if (1000.f > Distanc && Distanc > 800.f)
+		{
+			RobotMovementComponent->MaxFlySpeed = 600.f;
+		}
+		else if (800.f > Distanc && Distanc > 600.f)
+		{
+			RobotMovementComponent->MaxFlySpeed = 300.f;
+		}
+		else if (600.f > Distanc && Distanc > 400.f)
+		{
+			RobotMovementComponent->MaxFlySpeed = 100.f;
+		}
+		else if (400.f > Distanc && Distanc > 0.f)
+		{
+			RobotMovementComponent->MaxFlySpeed = 0.f;
+		}
+	}
+	else
+	{
+		RobotMovementComponent->MaxFlySpeed = 600.f;
+	}
+	
 }
 
 
@@ -179,7 +217,7 @@ void ARobot::RobotScanObjects(const FVector& ScanLocation)
 {
 	LookAtSpecifyLocation(ScanLocation);
 
-	Debug::Print("ScanLocation:" + ScanLocation.ToString());
+	// Debug::Print("ScanLocation:" + ScanLocation.ToString());
 
 	FVector RobotLocation = this->GetActorLocation();
 	FVector RobotScanObjectsLocation = ScanLocation;
