@@ -191,13 +191,9 @@ void AExplorer::RobotScanObjects(const FInputActionValue& Value)
 		{
 			if (AC_CanScanObjects_Text* CanScanObjects_Text = Cast<AC_CanScanObjects_Text>(Capsule_CollisionActor))
 			{
-				Debug::Print("Capsule Collision Is CanScanObjects_Text");
-
 				FVector ObjectsForward = CanScanObjects_Text->GetActorForwardVector();
 
 				CapsuleCollisionScanObjectsLocation = CanScanObjects_Text->GetActorLocation() + ObjectsForward * 20.f;
-
-				Debug::Print("CapsuleCollisionScanIbjectLocation: " + CapsuleCollisionScanObjectsLocation.ToString());
 
 				bCloserRangeRobotScanObjects = true;
 				bRemoteRobotScanObjects = false;
@@ -229,7 +225,6 @@ void AExplorer::RobotScanObjects(const FInputActionValue& Value)
 						FVector ObjectsForward = CanScanObjects_Text->GetActorForwardVector();
 
 						LT_ScanObjectsLocation = CanScanObjects_Text->GetActorLocation() + ObjectsForward * 20.f;
-						Debug::Print(LT_ScanObjectsLocation.ToString());
 
 						bRemoteRobotScanObjects = true;
 						bCloserRangeRobotScanObjects = false;
